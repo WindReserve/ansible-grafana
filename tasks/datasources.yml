@@ -1,10 +1,10 @@
 ---
 - name: Ensure datasources exist (via API)
   grafana_datasource:
-    grafana_url: "{{ grafana_api_url }}"
-    grafana_user: "{{ grafana_security.admin_user }}"
-    grafana_password: "{{ grafana_security.admin_password }}"
-    name: "{{ item.name }}"
+    grafana_url: "{{ monitoring_grafana_api_url }}"
+    grafana_user: "{{ monitoring_monitoring_grafana_security.admin_user }}"
+    grafana_password: "{{ monitoring_monitoring_grafana_security.admin_password }}"
+    name: "{{ item.name monitoring_}}"
     url: "{{ item.url }}"
     ds_type: "{{ item.type }}"
     access: "{{ item.access | default(omit) }}"
@@ -20,8 +20,8 @@
     aws_secret_key: "{{ item.aws_secret_key | default(omit) }}"
     aws_credentials_profile: "{{ item.aws_credentials_profile | default(omit) }}"
     aws_custom_metrics_namespaces: "{{ item.aws_custom_metrics_namespaces | default(omit) }}"
-  with_items: "{{ grafana_datasources }}"
-  when: not grafana_use_provisioning
+  with_items: "{{ monitoring_grafana_datasources }}"
+  when: not monitoring_grafana_use_provisioning
 
 - name: Create/Update datasources file (provisioning)
   become: true
@@ -31,10 +31,10 @@
       apiVersion: 1
       deleteDatasources: []
       datasources:
-      {{ grafana_datasources | to_nice_yaml }}
+      {{ monitoring_grafana_datasources | to_nice_yaml }}
     backup: false
     owner: root
     group: grafana
     mode: 0640
   notify: restart grafana
-  when: grafana_use_provisioning
+  when: monitoring_grafana_use_provisioning

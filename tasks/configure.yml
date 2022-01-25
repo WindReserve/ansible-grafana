@@ -4,22 +4,23 @@
     path: "{{ item }}"
     state: directory
     owner: root
-    group: grafana
+    group: "{{ monitoring_grafana_user_groupname }}"
   with_items:
-    - "/etc/grafana"
-    - "/etc/grafana/datasources"
-    - "/etc/grafana/provisioning"
-    - "/etc/grafana/provisioning/datasources"
-    - "/etc/grafana/provisioning/dashboards"
-    - "/etc/grafana/provisioning/notifiers"
-    - "/etc/grafana/provisioning/plugins"
+    - "{{ monitoring_grafana_base_path }}"
+    - "{{ monitoring_grafana_datasources_path }}"
+    - "{{ monitoring_grafana_provisioning_path }}"
+    - "{{ monitoring_grafana_provisioning_datasources_path }}"
+    - "{{ monitoring_grafana_provisioning_dashboards_path }}"
+    - "{{ monitoring_grafana_provisioning_notifiers_path }}"
+    - "{{ monitoring_grafana_provisioning_plugins_path }}"
+
 
 - name: Create grafana main configuration file
   template:
     src: grafana.ini.j2
-    dest: /etc/grafana/grafana.ini
+    dest: "{{ monitoring_grafana_base_path }}/grafana.ini"
     owner: root
-    group: grafana
+    group: "{{ monitoring_grafana_user_groupname }}"
     mode: 0640
   no_log: true
   notify: restart grafana
@@ -27,13 +28,13 @@
 - name: Create grafana LDAP configuration file
   template:
     src: ldap.toml.j2
-    dest: "{{ grafana_auth.ldap.config_file | default('/etc/grafana/ldap.toml') }}"
+    dest: "{{ monitoring_grafana_auth.ldap.config_file | default('/etc/grafana/ldap.toml') }}"
     owner: root
-    group: grafana
+    group: "{{ monitoring_grafana_user_groupname }}"
     mode: 0640
   when:
-    - "'ldap' in grafana_auth"
-    - "'enabled' not in grafana_auth.ldap or grafana_auth.ldap.enabled"
+    - "'ldap' in monitoring_grafana_auth"
+    - "'enabled' not in monitoring_grafana_auth.ldap or monitoring_grafana_auth.ldap.enabled"
   no_log: true
   notify: restart grafana
 
@@ -42,46 +43,46 @@
     path: "{{ item }}"
     state: directory
     mode: 0755
-    owner: "grafana"
-    group: "grafana"
+    owner: "{{ monitoring_grafana_user_username }}"
+    group: "{{ monitoring_grafana_user_groupname }}"
   with_items:
-    - "{{ grafana_logs_dir }}"
-    - "{{ grafana_data_dir }}"
-    - "{{ grafana_data_dir }}/dashboards"
-    - "{{ grafana_data_dir }}/plugins"
+    - "{{ monitoring_grafana_logs_dir }}"
+    - "{{ monitoring_grafana_data_dir }}"
+    - "{{ monitoring_grafana_data_dir }}/dashboards"
+    - "{{ monitoring_grafana_data_dir }}/plugins"
 
-- block:
-    - name: Create grafana socket directory
-      file:
-        path: "{{ grafana_server.socket | dirname }}"
-        state: directory
-        mode: 0775
-        owner: "grafana"
-        group: "grafana"
+# - block:
+#     - name: Create grafana socket directory
+#       file:
+#         path: monitoring_"{{ grafana_server.socket | dirname }}"
+#         state: directory
+#         mode: 0775
+#         owner: "grafana"
+#         group: "grafana"
 
-    - name: Ensure grafana socket directory created on startup
-      template:
-        src: tmpfiles.j2
-        dest: /etc/tmpfiles.d/grafana.conf
-        owner: root
-        group: root
-        mode: 0644
-  when:
-    - grafana_server.protocol is defined and grafana_server.protocol == 'socket'
-    - grafana_server.socket | dirname != '/var/run'
+#     - name: Ensure grafana socket directory created on startup
+#       template:
+#         src: tmpfiles.j2
+#         dest: /etc/tmpfiles.d/grafana.conf
+#         owner: root
+#         group: root
+#         mode: 0644
+#   when:
+#     - monitoring_grafana_server.protocol is defined and monitoring_grafana_server.protocol == 'socket'
+#     - monitoring_grafana_server.socket | dirname != '/var/run'
 
-- name: Enable grafana to ports lower than port 1024
-  capabilities:
-    path: /usr/sbin/grafana-server
-    capability: CAP_NET_BIND_SERVICE+ep
-    state: present
-  when:
-    - grafana_port | int <= 1024
-    - grafana_cap_net_bind_service
+# - name: Enable grafana to ports lower than port 1024
+#   capabilities:
+#     path: /usr/sbin/grafana-server
+#     capability: CAP_NET_BIND_SERVICE+ep
+#     state: present
+#   when:
+#     - monitoring_grafana_port | int <= 1024
+#     - monitoring_grafana_cap_net_bind_service
 
-- name: Enable and start Grafana systemd unit
-  systemd:
-    name: grafana-server
-    enabled: true
-    state: started
-    daemon_reload: true
+# - name: Enable and start Grafana systemd unit
+#   systemd:
+#     name: grafana-server
+#     enabled: true
+#     state: started
+#     daemon_reload: true

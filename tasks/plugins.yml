@@ -3,15 +3,15 @@
   find:
     file_type: directory
     recurse: false
-    paths: "{{ grafana_data_dir }}/plugins"
+    paths: "{{ monitoring_grafana_data_path }}/plugins"
   register: installed_plugins
 
 - name: Install plugins
   become: true
-  command: "grafana-cli --pluginsDir {{ grafana_data_dir }}/plugins plugins install {{ item }}"
+  command: "grafana-cli --pluginsDir {{ monitoring_grafana_data_path }}/plugins plugins install {{ item }}"
   args:
-    creates: "{{ grafana_data_dir }}/plugins/{{ item }}"
-  with_items: "{{ grafana_plugins | difference(installed_plugins.files) }}"
+    creates: "{{ monitoring_grafana_data_path }}/plugins/{{ item }}"
+  with_items: "{{ monitoring_grafana_plugins | difference(installed_plugins.files) }}"
   register: _plugin_install
   until: _plugin_install is succeeded
   retries: 5

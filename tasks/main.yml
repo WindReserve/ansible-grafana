@@ -33,7 +33,7 @@
     - grafana_install
 
 - include: plugins.yml
-  when: grafana_plugins != []
+  when: monitoring_grafana_plugins != []
   tags:
     - grafana_configure
 
@@ -49,9 +49,9 @@
 
 - name: Wait for grafana to start (http/s)
   wait_for:
-    host: "{{ grafana_address }}"
-    port: "{{ grafana_port }}"
-  when: grafana_server.protocol is undefined or grafana_server.protocol in ['http', 'https']
+    host: "{{ monitoring_grafana_address }}"
+    port: "{{ monitoring_grafana_port }}"
+  when: monitoring_grafana_server.protocol is undefined or monitoring_grafana_server.protocol in ['http', 'https']
   tags:
     - grafana_install
     - grafana_configure
@@ -62,8 +62,8 @@
 
 - name: Wait for grafana to start (socket)
   wait_for:
-    path: "{{ grafana_server.socket }}"
-  when: grafana_server.protocol is defined and grafana_server.protocol == 'socket'
+    path: "{{ monitoring_grafana_server.socket }}"
+  when: monitoring_grafana_server.protocol is defined and monitoring_grafana_server.protocol == 'socket'
   tags:
     - grafana_install
     - grafana_configure
@@ -73,36 +73,36 @@
     - grafana_run
 
 - include: api_keys.yml
-  when: grafana_api_keys | length > 0
+  when: monitoring_grafana_api_keys | length > 0
   tags:
     - grafana_configure
     - grafana_run
 
 - include: datasources.yml
-  when: grafana_datasources != []
+  when: monitoring_grafana_datasources != []
   tags:
     - grafana_configure
     - grafana_datasources
     - grafana_run
 
 - include: notifications.yml
-  when: grafana_alert_notifications | length > 0
+  when: monitoring_grafana_alert_notifications | length > 0
   tags:
     - grafana_configure
     - grafana_notifications
     - grafana_run
 
-- name: "Check if there are any dashboards in local {{ grafana_dashboards_dir }}"
+- name: "Check if there are any dashboards in local {{ monitoring_grafana_dashboards_dir }}"
   become: false
   set_fact:
-    found_dashboards: "{{ lookup('fileglob', grafana_dashboards_dir + '/*.json', wantlist=True) }}"
+    found_dashboards: "{{ lookup('fileglob', monitoring_grafana_dashboards_dir + '/*.json', wantlist=True) }}"
   tags:
     - grafana_configure
     - grafana_dashboards
     - grafana_run
 
 - include: dashboards.yml
-  when: grafana_dashboards | length > 0 or found_dashboards | length > 0
+  when: monitoring_grafana_dashboards | length > 0 or found_dashboards | length > 0
   tags:
     - grafana_configure
     - grafana_dashboards
