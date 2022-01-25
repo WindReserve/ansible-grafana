@@ -19,8 +19,8 @@ ExecStartPre=-{{ docker_host_command_sh }} -c '{{ docker_host_command_docker }} 
 
 ExecStart={{ docker_host_command_docker }} run --rm --name monitoring-grafana \
 			--log-driver=none \
-			{# --user={{ monitoring_grafana_user_uid }}:{{ monitoring_grafana_user_gid }} \ #}
-			--privileged \
+			--user={{ monitoring_grafana_user_uid }}:{{ monitoring_grafana_user_gid }} \
+			{# --privileged \ #}
 			{# --cap-drop=ALL \
 			--read-only \ #}
 			--network={{ monitoring_docker_network }} \
