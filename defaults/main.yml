@@ -2,6 +2,9 @@
 monitoring_grafana_enabled: false
 monitoring_grafana_version: latest
 
+monitoring_grafana_user_username: "{{ monitoring_user_username }}"
+monitoring_grafana_user_groupname: "{{ monitoring_user_groupname }}"
+
 # Should we use the provisioning capability when possible (provisioning require grafana >= 5.0)
 monitoring_grafana_use_provisioning: true
 
