@@ -1,0 +1,49 @@
+#jinja2: lstrip_blocks: "True"
+[Unit]
+Description=monitoring-grafana
+{% for service in monitoring_grafana_systemd_required_services_list %}
+Requires={{ service }}
+After={{ service }}
+{% endfor %}
+{% for service in monitoring_grafana_systemd_wanted_services_list %}
+Wants={{ service }}
+{% endfor %}
+DefaultDependencies=no
+
+[Service]
+Type=simple
+Environment="HOME={{ docker_systemd_unit_home_path }}"
+ExecStartPre=-{{ docker_host_command_sh }} -c '{{ docker_host_command_docker }} kill monitoring_grafana 2>/dev/null'
+ExecStartPre=-{{ docker_host_command_sh }} -c '{{ docker_host_command_docker }} rm monitoring_grafana 2>/dev/null'
+
+
+ExecStart={{ docker_host_command_docker }} run --rm --name monitoring-grafana \
+			--log-driver=none \
+			{# --user={{ monitoring_grafana_user_uid }}:{{ monitoring_grafana_user_gid }} \ #}
+			--privileged \
+			{# --cap-drop=ALL \
+			--read-only \ #}
+			--network={{ monitoring_docker_network }} \
+        	{% if monitoring_grafana_container_http_host_bind_port %}
+			-p {{ monitoring_grafana_container_http_host_bind_port }}:3000 \
+			{% endif %}
+			-v {{ monitoring_grafana_base_path }}:/etc/grafana:z \
+			-v {{ monitoring_grafana_logs_path }}:/var/log/grafana:z \
+			-v {{ monitoring_grafana_data_path }}:/var/lib/grafana:z \
+            --label-file {{ monitoring_grafana_base_path }}/labels \
+			{% for arg in monitoring_grafana_container_extra_arguments %}
+			{{ arg }} \
+			{% endfor %}
+			{{ monitoring_grafana_docker_image }}
+
+
+ExecStartPost=-{{ docker_host_command_docker }} network connect {{ traefik_docker_network }} monitoring-alertmanager
+
+ExecStopPost=-{{ docker_host_command_sh }} -c '{{ docker_host_command_docker }} kill monitoring_grafana 2>/dev/null'
+ExecStopPost=-{{ docker_host_command_sh }} -c '{{ docker_host_command_docker }} rm monitoring_grafana 2>/dev/null'
+Restart=always
+RestartSec=30
+SyslogIdentifier=monitoring-grafana
+
+[Install]
+WantedBy=multi-user.target
