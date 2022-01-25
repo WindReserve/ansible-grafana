@@ -1,0 +1,6 @@
+- name: Register grafana systemd service in systemd_services_list fact
+  set_fact:
+    systemd_services_list: "{{ systemd_services_list + ['monitoring-grafana.service'] }}"
+  when: monitoring_grafana_enabled|bool
+
+
