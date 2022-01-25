@@ -63,6 +63,7 @@
     - grafana_notifications
     - grafana_dashboards
     - grafana_run
+    - never
 
 - name: Wait for grafana to start (socket)
   wait_for:
