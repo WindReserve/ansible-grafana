@@ -46,10 +46,10 @@
     owner: "{{ monitoring_grafana_user_username }}"
     group: "{{ monitoring_grafana_user_groupname }}"
   with_items:
-    - "{{ monitoring_grafana_logs_dir }}"
-    - "{{ monitoring_grafana_data_dir }}"
-    - "{{ monitoring_grafana_data_dir }}/dashboards"
-    - "{{ monitoring_grafana_data_dir }}/plugins"
+    - "{{ monitoring_grafana_logs_path }}"
+    - "{{ monitoring_grafana_data_path }}"
+    - "{{ monitoring_grafana_data_path }}/dashboards"
+    - "{{ monitoring_grafana_data_path }}/plugins"
 
 # - block:
 #     - name: Create grafana socket directory

@@ -8,9 +8,9 @@ instance_name = {{ monitoring_grafana_instance }}
 
 # Directories
 [paths]
-data = {{ monitoring_grafana_data_dir }}
-logs = {{ monitoring_grafana_logs_dir }}
-plugins = {{ monitoring_grafana_data_dir }}/plugins
+data = /var/lib/grafana
+logs = /var/log/grafana
+plugins = /var/lib/grafana/plugins
 ; datasources = conf/datasources
 
 # HTTP options
@@ -102,7 +102,7 @@ versions_to_keep = 20
 
 [dashboards.json]
 enabled = true
-path = {{ monitoring_grafana_data_dir }}/dashboards
+path = /var/lib/grafana/dashboards
 
 # Alerting
 [alerting]
