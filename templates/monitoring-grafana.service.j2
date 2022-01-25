@@ -36,9 +36,9 @@ ExecStart={{ docker_host_command_docker }} run --rm --name monitoring-grafana \
 			{% endfor %}
 			{{ monitoring_grafana_docker_image }}
 
-
+{% if monitoring_grafana_traefik_enabled %}
 ExecStartPost=-{{ docker_host_command_docker }} network connect {{ traefik_docker_network }} monitoring-alertmanager
-
+{% endif %}
 ExecStopPost=-{{ docker_host_command_sh }} -c '{{ docker_host_command_docker }} kill monitoring_grafana 2>/dev/null'
 ExecStopPost=-{{ docker_host_command_sh }} -c '{{ docker_host_command_docker }} rm monitoring_grafana 2>/dev/null'
 Restart=always
