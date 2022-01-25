@@ -6,6 +6,18 @@
     force_source: "{{ monitoring_grafana_docker_image_force_pull if ansible_version.major > 2 or ansible_version.minor >= 8 else omit }}"
     force: "{{ omit if ansible_version.major > 2 or ansible_version.minor >= 8 else monitoring_grafana_docker_image_force_pull }}"
 
+- name: Ensure traefik labels file is installed
+  vars: 
+    service:
+        enable_traefik: "{{ monitoring_grafana_traefik_enabled }}"
+        labels_file_path: "{{ monitoring_grafana_base_path }}/labels"
+        service_name: grafana
+        hostname: "grafana.windreserve.de"
+        loadbalancer_port: 3000
+        basicauth: false
+  include_role: 
+    name: "docker-traefik-labels"
+
 - name: Ensure monitoring-grafana.service installed
   template:
     src: "{{ role_path }}/templates/monitoring-grafana.service.j2"
