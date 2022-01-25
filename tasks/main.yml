@@ -22,15 +22,15 @@
     - grafana_notifications
     - grafana_dashboards
 
-- include: install.yml
-  become: true
-  tags:
-    - grafana_install
-
 - include: configure.yml
   become: true
   tags:
     - grafana_configure
+
+- include: install.yml
+  become: true
+  tags:
+    - grafana_install
 
 - include: plugins.yml
   when: grafana_plugins != []
