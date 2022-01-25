@@ -2,7 +2,7 @@
 - name: restart grafana
   become: true
   service:
-    name: grafana-server
+    name: monitoring-grafana
     state: restarted
   tags:
     - grafana_run
