@@ -1,15 +1,13 @@
 ---
-grafana_version: latest
-grafana_yum_repo_template: etc/yum.repos.d/grafana.repo.j2
-grafana_manage_repo: true
+monitoring_grafana_version: latest
 
 # Should we use the provisioning capability when possible (provisioning require grafana >= 5.0)
-grafana_use_provisioning: true
+monitoring_grafana_use_provisioning: true
 
 # Should the provisioning be kept synced. If true, previous provisioned objects will be removed if not referenced anymore.
-grafana_provisioning_synced: false
+monitoring_grafana_provisioning_synced: false
 
-grafana_instance: "{{ ansible_fqdn | default(ansible_host) | default(inventory_hostname) }}"
+monitoring_grafana_instance: "{{ ansible_fqdn | default(ansible_host) | default(inventory_hostname) }}"
 
 monitoring_grafana_logs_path: "/docker/grafana/logs" # "/var/log/grafana"
 monitoring_grafana_data_path: "/docker/grafana/data" # "/var/lib/grafana"
@@ -22,21 +20,21 @@ monitoring_grafana_provisioning_dashboards_path: "{{ monitoring_grafana_provisio
 monitoring_grafana_provisioning_notifiers_path: "{{ monitoring_grafana_provisioning_path }}/notifiers" # "/etc/grafana/provisioning/notifiers"
 monitoring_grafana_provisioning_plugins_path: "{{ monitoring_grafana_provisioning_path }}/plugins"  # "/etc/grafana/provisioning/plugins"
 
-grafana_address: "0.0.0.0"
-grafana_port: 3000
+monitoring_grafana_address: "0.0.0.0"
+monitoring_grafana_port: 3000
 # To enable the use of ports below 1024 for unprivileged processes linux needs to set CAP_NET_BIND_SERVICE.
 # This has some security implications, and should be a conscious choice.
 # Get informed by reading: http://man7.org/linux/man-pages/man7/capabilities.7.html
-grafana_cap_net_bind_service: false
+monitoring_grafana_cap_net_bind_service: false
 
 # External Grafana address. Variable maps to "root_url" in grafana server section
-grafana_url: "http://{{ grafana_address }}:{{ grafana_port }}"
-grafana_api_url: "{{ grafana_url }}"
-grafana_domain: "{{ ansible_fqdn | default(ansible_host) | default('localhost') }}"
+monitoring_grafana_url: "http://{{ monitoring_grafana_address }}:{{ monitoring_grafana_port }}"
+monitoring_grafana_api_url: "{{ monitoring_grafana_url }}"
+monitoring_grafana_domain: "{{ ansible_fqdn | default(ansible_host) | default('localhost') }}"
 
 # Additional options for grafana "server" section
 # This section WILL omit options for: http_addr, http_port, domain, and root_url, as those settings are set by variables listed before
-grafana_server:
+monitoring_grafana_server:
   protocol: http
   enforce_domain: false
   socket: ""
@@ -49,18 +47,18 @@ grafana_server:
 
 # Variables correspond to ones in grafana.ini configuration file
 # Security
-grafana_security:
+monitoring_grafana_security:
   admin_user: admin
   admin_password: ""
 #  secret_key: ""
 #  login_remember_days: 7
-#  cookie_username: grafana_user
-#  cookie_remember_name: grafana_remember
+#  cookie_username: monitoring_grafana_user
+#  cookie_remember_name: monitoring_grafana_remember
 #  disable_gravatar: true
 #  data_source_proxy_whitelist:
 
 # Database setup
-grafana_database:
+monitoring_grafana_database:
   type: sqlite3
 #  host: 127.0.0.1:3306
 #  name: grafana
@@ -74,11 +72,11 @@ grafana_database:
 #  log_queries: ""
 
 # Remote cache
-grafana_remote_cache: {}
+monitoring_grafana_remote_cache: {}
 
 # User management and registration
-grafana_welcome_email_on_sign_up: false
-grafana_users:
+monitoring_grafana_welcome_email_on_sign_up: false
+monitoring_grafana_users:
   allow_sign_up: false
   # allow_org_create: true
   # auto_assign_org: true
@@ -90,7 +88,7 @@ grafana_users:
   # external_manage_info: ""
 
 # grafana authentication mechanisms
-grafana_auth: {}
+monitoring_grafana_auth: {}
 #  disable_login_form: false
 #  oauth_auto_login: false
 #  disable_signout_menu: false
@@ -104,7 +102,7 @@ grafana_auth: {}
 #  basic:
 #    enabled: true
 
-grafana_ldap: {}
+monitoring_grafana_ldap: {}
 #  verbose_logging: false
 #  servers:
 #    host: 127.0.0.1
@@ -143,48 +141,48 @@ grafana_ldap: {}
 #        - group_dn: "cn=alternative_admins,ou=groups,dc=grafana,dc=org"
 #          org_role: Admin
 
-grafana_session: {}
+monitoring_grafana_session: {}
 #  provider: file
 #  provider_config: "sessions"
 
-grafana_analytics: {}
+monitoring_grafana_analytics: {}
 #  reporting_enabled: true
 #  google_analytics_ua_id: ""
 
 # Set this for mail notifications
-grafana_smtp: {}
+monitoring_grafana_smtp: {}
 #  host:
 #  user:
 #  password:
 #  from_address:
 
 # Enable grafana alerting mechanism
-grafana_alerting:
+monitoring_grafana_alerting:
   execute_alerts: true
 #  error_or_timeout: 'alerting'
 #  nodata_or_nullvalues: 'no_data'
 #  concurrent_render_limit: 5
 
 # Grafana logging configuration
-grafana_log:
+monitoring_grafana_log:
 # mode: 'console file'
 # level: info
 
 # Internal grafana metrics system
-grafana_metrics: {}
+monitoring_grafana_metrics: {}
 #  interval_seconds: 10
 #  graphite:
 #    address: "localhost:2003"
 #    prefix: "prod.grafana.%(instance_name)s"
 
 # Distributed tracing options
-grafana_tracing: {}
+monitoring_grafana_tracing: {}
 #  address: "localhost:6831"
 #  always_included_tag: "tag1:value1,tag2:value2"
 #  sampler_type: const
 #  sampler_param: 1
 
-grafana_snapshots: {}
+monitoring_grafana_snapshots: {}
 #  external_enabled: true
 #  external_snapshot_url: "https://snapshots-origin.raintank.io"
 #  external_snapshot_name: "Publish to snapshot.raintank.io"
@@ -192,7 +190,7 @@ grafana_snapshots: {}
 #  snapshot_TTL_days: 90
 
 # External image store
-grafana_image_storage: {}
+monitoring_grafana_image_storage: {}
 #  provider: gcs
 #  key_file:
 #  bucket:
@@ -201,11 +199,11 @@ grafana_image_storage: {}
 
 #######
 # Plugins from https://grafana.com/plugins
-grafana_plugins: []
+monitoring_grafana_plugins: []
 #  - raintank-worldping-app
 
 # Dashboards from https://grafana.com/dashboards
-grafana_dashboards: []
+monitoring_grafana_dashboards: []
 #  - dashboard_id: '4271'
 #    revision_id: '3'
 #    datasource: 'Prometheus'
@@ -216,10 +214,10 @@ grafana_dashboards: []
 #    revision_id: '1'
 #    datasource: 'Prometheus'
 
-grafana_dashboards_dir: "dashboards"
+monitoring_grafana_dashboards_dir: "dashboards"
 
 # Alert notification channels to configure
-grafana_alert_notifications: []
+monitoring_grafana_alert_notifications: []
 #  - name: "Email Alert"
 #    type: "email"
 #    uid: channel1
@@ -228,7 +226,7 @@ grafana_alert_notifications: []
 #      addresses: "example@example.com"
 
 # Datasources to configure
-grafana_datasources: []
+monitoring_grafana_datasources: []
 #  - name: "Prometheus"
 #    type: "prometheus"
 #    access: "proxy"
@@ -243,7 +241,7 @@ grafana_datasources: []
 #      tlsSkipVerify: true
 
 # API keys to configure
-grafana_api_keys: []
+monitoring_grafana_api_keys: []
 #  - name: "admin"
 #    role: "Admin"
 #  - name: "viewer"
@@ -252,11 +250,11 @@ grafana_api_keys: []
 #    role: "Editor"
 
 # The location where the keys should be stored.
-grafana_api_keys_dir: "{{ lookup('env', 'HOME') }}/grafana/keys"
+monitoring_grafana_api_keys_dir: "{{ lookup('env', 'HOME') }}/grafana/keys"
 
-grafana_environment: {}
+monitoring_grafana_environment: {}
 
 # Panels configurations
-grafana_panels: {}
+monitoring_grafana_panels: {}
 #  disable_sanitize_html: false
 #  enable_alpha: false
