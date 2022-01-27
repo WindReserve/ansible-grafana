@@ -105,12 +105,12 @@
 #   with_fileglob:
 #     - "/tmp/dashboards/*"
 
-- when: grafana_use_provisioning
+- when: monitoring_grafana_use_provisioning
   block:
     - name: Create/Update dashboards file (provisioning)
       become: true
       copy:
-        dest: "/etc/grafana/provisioning/dashboards/ansible.yml"
+        dest: "{{ monitoring_grafana_provisioning_dashboards_path }}/ansible.yml"
         content: |
           apiVersion: 1
           providers:
@@ -119,7 +119,7 @@
              folder: ''
              type: file
              options:
-               path: "{{ grafana_data_dir }}/dashboards"
+               path: "/etc/grafana/provisioning/dashboards"
         backup: false
         owner: root
         group: "{{ monitoring_grafana_user_groupname }}" 
@@ -128,21 +128,21 @@
 
     - name: Register previously copied dashboards
       find:
-        paths: "{{ grafana_data_dir }}/dashboards"
+        paths: "{{ monitoring_grafana_data_path }}/dashboards"
         hidden: true
         patterns:
           - "*.json"
       register: _dashboards_present
-      when: grafana_provisioning_synced
+      when: monitoring_grafana_provisioning_synced
 
     - name: Import grafana dashboards
       become: true
       copy:
         src: "{{ item }}"
-        dest: "{{ grafana_data_dir }}/dashboards/{{ item | basename }}"
+        dest: "{{ monitoring_grafana_provisioning_dashboards_path }}/{{ item | basename }}"
       with_fileglob:
         - "{{ _tmp_dashboards.path }}/*"
-        - "{{ grafana_dashboards_dir }}/*.json"
+        - "{{ role_path }}/files/dashboards/*.json"
       register: _dashboards_copied
       notify: "provisioned dashboards changed"
 
@@ -150,7 +150,7 @@
       set_fact:
         _dashboards_present_list: "{{ _dashboards_present | json_query('files[*].path') | default([]) }}"
         _dashboards_copied_list: "{{ _dashboards_copied | json_query('results[*].dest') | default([]) }}"
-      when: grafana_provisioning_synced
+      when: monitoring_grafana_provisioning_synced
 
     - name: Remove dashboards not present on deployer machine (synchronize)
       become: true
@@ -158,4 +158,4 @@
         path: "{{ item }}"
         state: absent
       with_items: "{{ _dashboards_present_list | difference( _dashboards_copied_list ) }}"
-      when: grafana_provisioning_synced
+      when: monitoring_grafana_provisioning_synced
