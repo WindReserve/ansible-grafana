@@ -97,6 +97,15 @@
     - grafana_notifications
     - grafana_run
 
+- name: "Gather enabled dashboards from monitoring_prometheus_scrapers"
+  become: false
+  set_fact:
+    found_dashboards: "{{ monitoring_prometheus_scrapers | selectattr('enabled') | map(attribute='grafana_dashboard') }}"
+  tags:
+    - grafana_configure
+    - grafana_dashboards
+    - grafana_run
+
 - name: "Check if there are any dashboards in local {{ role_path }}/files/dashboards"
   become: false
   set_fact:
@@ -105,6 +114,7 @@
     - grafana_configure
     - grafana_dashboards
     - grafana_run
+    - never
 
 - include: dashboards.yml
   when: monitoring_grafana_dashboards | length > 0 or found_dashboards | length > 0

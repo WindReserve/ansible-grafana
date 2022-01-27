@@ -140,9 +140,11 @@
       copy:
         src: "{{ item }}"
         dest: "{{ monitoring_grafana_provisioning_dashboards_path }}/{{ item | basename }}"
-      with_fileglob:
-        - "{{ _tmp_dashboards.path }}/*"
-        - "{{ role_path }}/files/dashboards/*.json"
+      with_items: "{{ found_dashboards | select('ne', '') }}"
+      # with_fileglob:
+      #   - "{{ _tmp_dashboards.path }}/*"
+      #   - "{{ found_dashboards }}"
+      # - "{{ role_path }}/files/dashboards/*.json"
       register: _dashboards_copied
       notify: "provisioned dashboards changed"
 
@@ -152,10 +154,20 @@
         _dashboards_copied_list: "{{ _dashboards_copied | json_query('results[*].dest') | default([]) }}"
       when: monitoring_grafana_provisioning_synced
 
+    # TODO: these two steps don't seem to work. Probably because the previous step
+    # The paths are not the same so we should compare basenames.
     - name: Remove dashboards not present on deployer machine (synchronize)
       become: true
       file:
         path: "{{ item }}"
+        state: absent
+      with_items: "{{ _dashboards_present_list | difference( _dashboards_copied_list ) }}"
+      when: monitoring_grafana_provisioning_synced
+
+    - name: Remove dashboards not present on deployer machine from provisioning (synchronize)
+      become: true
+      file:
+        path: "{{ monitoring_grafana_provisioning_dashboards_path }}/{{ item | basename }}"
         state: absent
       with_items: "{{ _dashboards_present_list | difference( _dashboards_copied_list ) }}"
       when: monitoring_grafana_provisioning_synced
