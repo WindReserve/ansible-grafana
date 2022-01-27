@@ -54,7 +54,7 @@
       {
         "datasource": {
           "type": "prometheus",
-          "uid": "SJs-P-0nz"
+          "uid": "prometheus"
         },
         "fieldConfig": {
           "defaults": {
@@ -134,7 +134,7 @@
       {
         "datasource": {
           "type": "prometheus",
-          "uid": "SJs-P-0nz"
+          "uid": "prometheus"
         },
         "fieldConfig": {
           "defaults": {
@@ -210,7 +210,7 @@
       {
         "datasource": {
           "type": "prometheus",
-          "uid": "SJs-P-0nz"
+          "uid": "prometheus"
         },
         "fieldConfig": {
           "defaults": {
@@ -286,7 +286,7 @@
       {
         "datasource": {
           "type": "prometheus",
-          "uid": "SJs-P-0nz"
+          "uid": "prometheus"
         },
         "fieldConfig": {
           "defaults": {
@@ -363,7 +363,7 @@
         "columns": [],
         "datasource": {
           "type": "prometheus",
-          "uid": "SJs-P-0nz"
+          "uid": "prometheus"
         },
         "fontSize": "100%",
         "gridPos": {
@@ -422,7 +422,7 @@
       {
         "datasource": {
           "type": "prometheus",
-          "uid": "SJs-P-0nz"
+          "uid": "prometheus"
         },
         "fieldConfig": {
           "defaults": {
@@ -543,7 +543,7 @@
       {
         "datasource": {
           "type": "prometheus",
-          "uid": "SJs-P-0nz"
+          "uid": "prometheus"
         },
         "fieldConfig": {
           "defaults": {
@@ -680,7 +680,7 @@
         "columns": [],
         "datasource": {
           "type": "prometheus",
-          "uid": "SJs-P-0nz"
+          "uid": "prometheus"
         },
         "fontSize": "100%",
         "gridPos": {
@@ -740,7 +740,7 @@
       {
         "datasource": {
           "type": "prometheus",
-          "uid": "SJs-P-0nz"
+          "uid": "prometheus"
         },
         "fieldConfig": {
           "defaults": {
@@ -860,7 +860,7 @@
       {
         "datasource": {
           "type": "prometheus",
-          "uid": "SJs-P-0nz"
+          "uid": "prometheus"
         },
         "fieldConfig": {
           "defaults": {
@@ -1010,7 +1010,7 @@
       {
         "datasource": {
           "type": "prometheus",
-          "uid": "SJs-P-0nz"
+          "uid": "prometheus"
         },
         "description": "Aggregated over all Grafana nodes.",
         "fieldConfig": {
