@@ -4,10 +4,11 @@
   copy:
     content: |
       apiVersion: 1
+      notifiers: 
       {{ monitoring_grafana_alert_notifications | to_nice_yaml }}
-    dest: /etc/grafana/provisioning/notifiers/ansible.yml
+    dest: "{{ monitoring_grafana_provisioning_notifiers_path }}/ansible.yml"
     owner: root
-    group: grafana
+    group: "{{ monitoring_grafana_user_groupname }}"
     mode: 0640
   notify: restart grafana
   when: monitoring_grafana_use_provisioning
